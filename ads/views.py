@@ -54,6 +54,7 @@ class CategoryDetailView(DetailView):
         })
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class AdsView(View):
     def get(self, request):
         ads = Ads.objects.all()
@@ -72,11 +73,11 @@ class AdsView(View):
         ads_data = json.loads(request.body)
 
         ads = Ads()
-        ads.name = ads['name']
-        ads.author = ads_data['author'],
-        ads.price = ads_data['price'],
-        ads.description = ads_data['description'],
-        ads.address = ads_data['address'],
+        ads.name = ads_data['name']
+        ads.author = ads_data['author']
+        ads.price = ads_data['price']
+        ads.description = ads_data['description']
+        ads.address = ads_data['address']
         ads.is_published = ads_data['is_published']
 
         ads.save()
@@ -88,7 +89,7 @@ class AdsView(View):
                 'price': ads.price,
                 'description': ads.description,
                 'address': ads.address,
-                'ads': ads.is_published
+                'is_published': ads.is_published
             }
         )
 
