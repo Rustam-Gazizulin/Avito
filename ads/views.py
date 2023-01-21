@@ -3,6 +3,7 @@ import json
 from django.core.paginator import Paginator
 from django.db.models import Count
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -110,6 +111,8 @@ class AdsListView(ListView):
                 "id": ad.id,
                 "name": ad.name,
                 "author_id": ad.author_id,
+                "author": ad.author.username,
+                "category": ad.category.name if ad.category else "Без категории",
                 "price": ad.price,
                 "image": ad.image.url if ad.image else None
             })
@@ -132,6 +135,7 @@ class AdsDetailView(DetailView):
             'id': ads.id,
             'name': ads.name,
             'author_id': ads.author_id,
+            'author': ads.author.username,
             'price': ads.price,
             'description': ads.description,
             'is_published': ads.is_published,
@@ -148,23 +152,27 @@ class AdsCreateView(CreateView):
     def post(self, request, *args, **kwargs):
         ads_data = json.loads(request.body)
 
+        author = get_object_or_404(User, id=ads_data['author_id'])
+        category = get_object_or_404(Category, id=ads_data['category_id'])
+
         ads = Ads.objects.create(
             name=ads_data['name'],
-            author_id=ads_data['author_id'],
+            author=author,
+            category=category,
             price=ads_data['price'],
             description=ads_data['description'],
-            category_id=ads_data['category_id'],
+            category_id=ads_data['category_id'] if 'is_published' in ads_data else False,
         )
 
         return JsonResponse(
             {
                 'id': ads.id,
                 'name': ads.name,
-                'author_id': ads.author_id,
+                'author': ads.author.username,
+                'category': ads.category.name,
                 'price': ads.price,
                 'description': ads.description,
                 'is_published': ads.is_published,
-                'category_id': ads.category_id,
                 'image': ads.image.url if ads.image else None,
 
             }
@@ -192,6 +200,7 @@ class AdsUpdateView(UpdateView):
             'id': self.object.id,
             'name': self.object.name,
             'author_id': self.object.author_id,
+            'author': self.object.author.username,
             'price': self.object.price,
             'description': self.object.description,
             'is_published': self.object.is_published,
@@ -226,7 +235,7 @@ class AdsImageView(UpdateView):
             "id": self.object.id,
             "name": self.object.name,
             "author_id": self.object.author_id,
-            #"author": self.object.author,
+            "author": self.object.author.username,
             "price": self.object.price,
             "description": self.object.description,
             "is_published": self.object.is_published,
