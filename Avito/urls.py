@@ -7,11 +7,16 @@ from ads import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+
     path("", views.start_page, name='start'),
 
     path("cat/", include('ads.urls_cat')),
 
     path("ads/", include('ads.urls_ads')),
+
+    path("loc/", include('users.urls_loc')),
+
+    path("user/", include('users.urls_user'))
 ]
 
 if settings.DEBUG:
