@@ -1,11 +1,16 @@
 import json
 
+from django.core.paginator import Paginator
+from django.db.models import Count
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 
+from Avito import settings
 from ads.models import Category, Ads
+from users.models import User
 
 
 def start_page(request):
@@ -17,6 +22,9 @@ class CategoryListView(ListView):
 
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
+
+        self.object_list = self.object_list.order_by('name')
+
 
         response = []
         for cat in self.object_list:
@@ -90,15 +98,27 @@ class AdsListView(ListView):
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
 
-        response = []
-        for ad in self.object_list:
-            response.append({
+        self.object_list = self.object_list.order_by('-price')
+
+        paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        ads = []
+        for ad in page_obj:
+            ads.append({
                 "id": ad.id,
                 "name": ad.name,
                 "author_id": ad.author_id,
                 "price": ad.price,
                 "image": ad.image.url if ad.image else None
             })
+
+        response = {
+            "items": ads,
+            "num_pages": paginator.num_pages,
+            "total": paginator.count
+        }
         return JsonResponse(response, safe=False)
 
 
@@ -213,3 +233,34 @@ class AdsImageView(UpdateView):
             "category_id": self.object.category_id,
             "image": self.object.image.url if self.object.image else None
         })
+
+
+class UserAdsDetailView(View):
+    def get(self, request):
+        user_qs = Ads.objects.annotate(total_ads=Count('is_published'))
+
+        by_user = User.objects.all()
+        paginator = Paginator(by_user, settings.TOTAL_ON_PAGE_USER)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        users = []
+        for user in page_obj:
+            users.append(
+                {
+                    "id": user.id,
+                    "username": user.username,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "role": user.role,
+                    "age": user.age,
+                    #"location": "Москва",  # поле name из location
+                    "total_ads": user_qs
+                })
+        response = {
+            "items": users,
+            "total": paginator.count,
+            "num_page": paginator.num_pages
+        }
+
+        return JsonResponse(response, safe=False)

@@ -1,8 +1,10 @@
 import json
 
+from django.db.models import Count
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
@@ -98,6 +100,9 @@ class UserListView(ListView):
 
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
+
+        self.object_list = self.object_list.order_by('username')
+
 
         response = []
         for user in self.object_list:
@@ -212,3 +217,6 @@ class UserDeleteView(DeleteView):
         super().delete(request, *args, **kwargs)
 
         return JsonResponse({"status": "ok"}, status=200)
+
+
+
