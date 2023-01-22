@@ -244,32 +244,32 @@ class AdsImageView(UpdateView):
         })
 
 
-class UserAdsDetailView(View):
-    def get(self, request):
-        user_qs = Ads.objects.annotate(total_ads=Count('is_published'))
-
-        by_user = User.objects.all()
-        paginator = Paginator(by_user, settings.TOTAL_ON_PAGE_USER)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-
-        users = []
-        for user in page_obj:
-            users.append(
-                {
-                    "id": user.id,
-                    "username": user.username,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                    "role": user.role,
-                    "age": user.age,
-                    #"location": "Москва",  # поле name из location
-                    "total_ads": user_qs
-                })
-        response = {
-            "items": users,
-            "total": paginator.count,
-            "num_page": paginator.num_pages
-        }
-
-        return JsonResponse(response, safe=False)
+# class UserAdsDetailView(View):
+#     def get(self, request):
+#         user_qs = Ads.objects.annotate(total_ads=Count('is_published'))
+#
+#         by_user = User.objects.all()
+#         paginator = Paginator(by_user, settings.TOTAL_ON_PAGE_USER)
+#         page_number = request.GET.get('page')
+#         page_obj = paginator.get_page(page_number)
+#
+#         users = []
+#         for user in page_obj:
+#             users.append(
+#                 {
+#                     "id": user.id,
+#                     "username": user.username,
+#                     "first_name": user.first_name,
+#                     "last_name": user.last_name,
+#                     "role": user.role,
+#                     "age": user.age,
+#                     #"location": "Москва",  # поле name из location
+#                     "total_ads": user_qs
+#                 })
+#         response = {
+#             "items": users,
+#             "total": paginator.count,
+#             "num_page": paginator.num_pages
+#         }
+#
+#         return JsonResponse(response, safe=False)

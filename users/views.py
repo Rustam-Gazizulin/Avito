@@ -8,6 +8,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
+from ads.models import Ads
 from users.models import Location, User
 
 
@@ -100,9 +101,7 @@ class UserListView(ListView):
 
     def get(self, request, *args, **kwargs):
         super().get(request, *args, **kwargs)
-
         self.object_list = self.object_list.order_by('username')
-
 
         response = []
         for user in self.object_list:
@@ -114,6 +113,7 @@ class UserListView(ListView):
                 'role': user.role,
                 'age': user.age,
                 'location': list(map(str, user.location.all())),
+                'total_ads': user.ads_set.count()
             })
         return JsonResponse(response, safe=False)
 

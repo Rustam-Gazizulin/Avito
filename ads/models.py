@@ -16,7 +16,7 @@ class Category(models.Model):
 
 class Ads(models.Model):
     name = models.CharField(max_length=50, unique=True, verbose_name='Объявление')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='ads', verbose_name='Автор')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
     price = models.PositiveIntegerField(verbose_name='Цена')
     description = models.TextField(null=True, verbose_name='Описание')
     is_published = models.BooleanField(default=False, verbose_name='Статус размещения')
