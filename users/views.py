@@ -7,9 +7,11 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from rest_framework.generics import ListAPIView
 
 from ads.models import Ads
 from users.models import Location, User
+from users.serializers import UserListSerializer
 
 
 class LocationListView(ListView):
@@ -96,26 +98,27 @@ class LocationDeleteView(DeleteView):
         return JsonResponse({"status": "ok"}, status=200)
 
 
-class UserListView(ListView):
-    model = User
+class UserListView(ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserListSerializer
 
-    def get(self, request, *args, **kwargs):
-        super().get(request, *args, **kwargs)
-        self.object_list = self.object_list.order_by('username')
-
-        response = []
-        for user in self.object_list:
-            response.append({
-                'id': user.id,
-                'username': user.username,
-                'last_name': user.last_name,
-                'first_name': user.first_name,
-                'role': user.role,
-                'age': user.age,
-                'location': list(map(str, user.location.all())),
-                'total_ads': user.ads_set.count()
-            })
-        return JsonResponse(response, safe=False)
+    # def get(self, request, *args, **kwargs):
+    #     super().get(request, *args, **kwargs)
+    #     self.object_list = self.object_list.order_by('username')
+    #
+    #     response = []
+    #     for user in self.object_list:
+    #         response.append({
+    #             'id': user.id,
+    #             'username': user.username,
+    #             'last_name': user.last_name,
+    #             'first_name': user.first_name,
+    #             'role': user.role,
+    #             'age': user.age,
+    #             'location': list(map(str, user.location.all())),
+    #             'total_ads': user.ads_set.count()
+    #         })
+    #     return JsonResponse(response, safe=False)
 
 
 class UserDetailView(DetailView):
