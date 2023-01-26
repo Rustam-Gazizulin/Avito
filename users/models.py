@@ -16,9 +16,9 @@ class Location(models.Model):
 
 class User(models.Model):
     STATUS = [
-        ("Пользователь", 'USER'),
-        ("Администратор", 'ADMIN'),
-        ("Модератор", 'MODERATOR')
+        ('USER', 'Пользователь'),
+        ("ADMIN", 'Администратор'),
+        ("MODERATOR", 'Модератор')
     ]
 
     first_name = models.CharField(max_length=30, verbose_name='Имя')
