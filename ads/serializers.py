@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from ads.models import Ads
+from ads.models import Ads, Category
 
 
 class AdsListSerializer(serializers.ModelSerializer):
@@ -61,3 +61,9 @@ class AdsDestroySerializer(serializers.ModelSerializer):
     class Meta:
         model = Ads
         field = ['id']
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'
