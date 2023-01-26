@@ -38,3 +38,5 @@ class Ads(models.Model):
 
 
 
+
+
