@@ -9,6 +9,7 @@ class UserListSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='name'
     )
+    total_ads = serializers.IntegerField()
 
     class Meta:
         model = User
@@ -41,7 +42,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def is_valid(self, *, raise_exception=False):
-        self._locations = self.initial_data.pop('location')
+        self._locations = self.initial_data.pop('location', [])
         return super().is_valid(raise_exception=raise_exception)
 
     def create(self, validated_data):

@@ -10,5 +10,4 @@ urlpatterns = [
     path('update/<int:pk>/', views.AdsUpdateView.as_view()),
     path('delete/<int:pk>/', views.AdsDeleteView.as_view()),
     path('image/<int:pk>/', views.AdsImageView.as_view()),
-    # path('total/', views.UserAdsDetailView.as_view()),
     ]
