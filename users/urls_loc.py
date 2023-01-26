@@ -1,12 +1,11 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
 
-from users import views
+from users.views import LocationViewSet
 
+router = routers.SimpleRouter()
+router.register('', LocationViewSet)
 
 urlpatterns = [
-    path('', views.LocationListView.as_view(), name='location'),
-    path('<int:pk>/', views.LocationDetailView.as_view()),
-    path('create/', views.LocationCreateView.as_view()),
-    path('update/<int:pk>/', views.LocationUpdateView.as_view()),
-    path('delete/<int:pk>/', views.LocationDeleteView.as_view()),
+    path('', include(router.urls))
     ]
