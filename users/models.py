@@ -16,6 +16,9 @@ class Location(models.Model):
 
 
 class User(AbstractUser):
+    USER = 'User'
+    ADMIN = 'Admin'
+    MODERATOR = 'Moderator'
     STATUS = [
         ('USER', 'Пользователь'),
         ("ADMIN", 'Администратор'),
@@ -26,8 +29,8 @@ class User(AbstractUser):
     # last_name = models.CharField(max_length=30, null=True, verbose_name='Фамилия')
     # username = models.CharField(max_length=30, unique=True, verbose_name='Логин')
     # password = models.CharField(max_length=30, verbose_name='Пароль')
-    role = models.CharField(choices=STATUS, max_length=20, default='member', verbose_name='Должность')
-    age = models.PositiveSmallIntegerField(verbose_name='Возраст')
+    role = models.CharField(choices=STATUS, max_length=20, default=USER, verbose_name='Должность')
+    age = models.PositiveSmallIntegerField(verbose_name='Возраст', null=True)
     location = models.ManyToManyField(Location, verbose_name='Адрес')
 
     class Meta:
@@ -35,7 +38,7 @@ class User(AbstractUser):
         verbose_name_plural = 'Пользователи'
 
     def __str__(self):
-        return f'{self.last_name} {self.first_name}'
+        return f'{self.username} {self.first_name}'
 
     @property
     def total_ads(self):
