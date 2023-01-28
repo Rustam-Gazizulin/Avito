@@ -26,8 +26,8 @@ def convert_to_json(csv_file, json_file, model_name):
             #     row['location_id'] = int(row['location_id'])
             if 'author_id' in row:
                 row['author_id'] = int(row['author_id'])
-            if 'category_id' in row:
-                row['category_id'] = int(row['category_id'])
+            # if 'category_id' in row:
+            #     row['category_id'] = int(row['category_id'])
             if 'lat' in row:
                 row['lat'] = float(row['lat'])
             if 'lng' in row:
@@ -47,7 +47,7 @@ ads_json = r'ads.json'
 model = 'ads.ads'
 model_cat = 'ads.category'
 model_user = 'users.user'
-model_location = 'ads.location'
+model_location = 'users.location'
 
 categories_csv = r'categories.csv'
 categories_json = r'categories.json'
@@ -58,7 +58,7 @@ location_json = r'location.json'
 user_csv = r'user.csv'
 user_json = r'user.json'
 
-# convert_to_json(location_csv, location_json, model_location)
-convert_to_json(user_csv, user_json, model_user)
+convert_to_json(location_csv, location_json, model_location)
+# convert_to_json(user_csv, user_json, model_user)
 # convert_to_json(ads_csv, ads_json, model)
 # convert_to_json(categories_csv, categories_json, model_cat)
