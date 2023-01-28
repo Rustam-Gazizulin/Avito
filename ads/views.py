@@ -2,10 +2,13 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import UpdateView
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView, \
+    get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from ads.models import Category, Ads
+from ads.permissions import AdsUpdatePermission
 from ads.serializers import AdsListSerializer, AdsRetrieveSerializer, AdsCreateSerializer, AdsUpdateSerializer, \
     AdsDestroySerializer, CategorySerializer
 
@@ -45,6 +48,7 @@ class AdsListView(ListAPIView):
 class AdsDetailView(RetrieveAPIView):
     queryset = Ads.objects.all()
     serializer_class = AdsRetrieveSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class AdsCreateView(CreateAPIView):
@@ -55,6 +59,9 @@ class AdsCreateView(CreateAPIView):
 class AdsUpdateView(UpdateAPIView):
     queryset = Ads.objects.all()
     serializer_class = AdsUpdateSerializer
+    permission_classes = [AdsUpdatePermission]
+
+
 
 
 class AdsDeleteView(DestroyAPIView):

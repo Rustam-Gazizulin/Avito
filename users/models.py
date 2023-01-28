@@ -20,15 +20,11 @@ class User(AbstractUser):
     ADMIN = 'Admin'
     MODERATOR = 'Moderator'
     STATUS = [
-        ('USER', 'Пользователь'),
-        ("ADMIN", 'Администратор'),
-        ("MODERATOR", 'Модератор')
+        ('User', 'Пользователь'),
+        ("Admin", 'Администратор'),
+        ("Moderator", 'Модератор')
     ]
 
-    # first_name = models.CharField(max_length=30, verbose_name='Имя')
-    # last_name = models.CharField(max_length=30, null=True, verbose_name='Фамилия')
-    # username = models.CharField(max_length=30, unique=True, verbose_name='Логин')
-    # password = models.CharField(max_length=30, verbose_name='Пароль')
     role = models.CharField(choices=STATUS, max_length=20, default=USER, verbose_name='Должность')
     age = models.PositiveSmallIntegerField(verbose_name='Возраст', null=True)
     location = models.ManyToManyField(Location, verbose_name='Адрес')
