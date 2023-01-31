@@ -2,15 +2,15 @@ from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import UpdateView
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView, \
-    get_object_or_404
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
-from ads.models import Category, Ads
-from ads.permissions import AdsUpdatePermission
+from ads.models import Category, Ads, Selection
+from ads.permissions import AdsUpdatePermission, IsOwnerIsStaff
 from ads.serializers import AdsListSerializer, AdsRetrieveSerializer, AdsCreateSerializer, AdsUpdateSerializer, \
-    AdsDestroySerializer, CategorySerializer
+    AdsDestroySerializer, CategorySerializer, SelectionListSerializer, SelectionDetailSerializer, \
+    SelectionCreateSerializer
 
 
 def start_page(request):
@@ -62,8 +62,6 @@ class AdsUpdateView(UpdateAPIView):
     permission_classes = [AdsUpdatePermission]
 
 
-
-
 class AdsDeleteView(DestroyAPIView):
     queryset = Ads.objects.all()
     serializer_class = AdsDestroySerializer
@@ -92,3 +90,30 @@ class AdsImageView(UpdateView):
             "image": self.object.image.url if self.object.image else None
         })
 
+
+class SelectionListView(ListAPIView):
+    queryset = Selection.objects.all()
+    serializer_class = SelectionListSerializer
+
+
+class SelectionDetailView(RetrieveAPIView):
+    queryset = Selection
+    serializer_class = SelectionDetailSerializer
+
+
+class SelectionUpdateView(UpdateAPIView):
+    queryset = Selection.objects.all()
+    serializer_class = SelectionCreateSerializer
+    permission_classes = [IsAuthenticated, IsOwnerIsStaff]
+
+
+class SelectionCreateView(CreateAPIView):
+    queryset = Selection
+    serializer_class = SelectionCreateSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class SelectionDeleteView(DestroyAPIView):
+    queryset = Selection
+    serializer_class = SelectionCreateSerializer
+    permission_classes = [IsAuthenticated]

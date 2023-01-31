@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from rest_framework.generics import get_object_or_404
 
-from ads.models import Ads, Category
+from ads.models import Ads, Category, Selection
+from users.models import User
 
 
 class AdsListSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class AdsListSerializer(serializers.ModelSerializer):
 
 class AdsRetrieveSerializer(serializers.ModelSerializer):
     author_id = serializers.IntegerField()
-    author = serializers.CharField()
+    author = serializers.SlugRelatedField(slug_field='username', queryset=User.objects.all())
     category = serializers.CharField()
 
     class Meta:
@@ -67,4 +67,26 @@ class AdsDestroySerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
+        fields = '__all__'
+
+
+class SelectionListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Selection
+        fields = ['id', 'name']
+
+
+class SelectionDetailSerializer(serializers.ModelSerializer):
+    items = AdsListSerializer(many=True)
+
+    class Meta:
+        model = Selection
+        fields = '__all__'
+
+
+class SelectionCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Selection
         fields = '__all__'

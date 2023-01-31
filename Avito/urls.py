@@ -16,6 +16,8 @@ urlpatterns = [
 
     path("ads/", include('ads.urls_ads')),
 
+    path("sel/", include('ads.urls_sel')),
+
     path("loc/", include('users.urls_loc')),
 
     path("user/", include('users.urls_user'))

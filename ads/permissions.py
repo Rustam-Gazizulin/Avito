@@ -12,6 +12,15 @@ class AdsUpdatePermission(BasePermission):
         if request.method == 'PATCH':
             return request.user.is_authenticated and request.user.ads_set.exists()
         return True
-        # if obj.user == request.user:
-        #     return True
-        # return False
+
+
+class IsOwnerIsStaff(BasePermission):
+    message = 'Редактировать может только владелец или модератор'
+
+    def has_object_permission(self, request, view, obj):
+        if request.user == obj.owner or request.user.role in [User.ADMIN, User.MODERATOR]:
+            return True
+        return False
+
+
+
